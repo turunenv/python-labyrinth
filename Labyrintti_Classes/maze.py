@@ -11,6 +11,14 @@ class Maze():
                 
                 
     
+    def carve_maze(self):
+       
+        #generate random sell from which to start carving the maze
+        x = random.randint(0,self.width)
+        y = random.randint(0,self.height)
+        self.squares[x][y].has_been_visited = True
+        squarelist = [self.squares[x][y]]
+        
     
     
     
@@ -22,11 +30,23 @@ class Maze():
     
     
     
-    
-    
-    
-    
-    
+    #returns list of unvisited neighbour squares 
+    def unvisited_neighbours(self,square):
+        
+        #sets numeric tuples for possible directions
+        directions = [('N',(0,-1)),('S',(0,1)),('W',(-1,0)),('E',(1,0))]
+        
+        unvisited = []
+        
+        #checks all directions for possible neighbour cells.
+        for direction, (xi,yi) in directions:
+            if (0 <= (square.x + xi) < self.width) and (0 <= square.y + yi < self.height):
+                
+                #checks if found neighbour has been visited, if not, adds to the list
+                if (self.squares[square.x+xi][square.y+yi].has_been_visited()):
+                    unvisited.append(direction,self.squares[square.x+xi][square.y+yi])
+                
+        return unvisited
     
     
     
