@@ -1,4 +1,4 @@
-from __builtin__ import False
+from __builtin__ import False, True
 class Square():
     
     # The Class Square represents a single square in the labyrinth.
@@ -23,5 +23,9 @@ class Square():
         self.walls[wall] = False
         neighbour.walls[Square.walls_between_squares[wall]] = False
         
-    def has_been_visited(self):
-        self.visited = False
+    #square has not been vi sited, if it still has all four walls
+    def has_not_been_visited(self):
+        if (True in self.walls.values()):
+            return True
+        else:
+            return False
