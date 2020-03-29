@@ -17,7 +17,7 @@ class Maze():
         #generate random sell from which to start carving the maze
         x = random.randint(0,self.width)
         y = random.randint(0,self.height)
-        self.squares[x][y].has_been_visited = True
+        
         squarelist = [self.squares[x][y]]
         
         '''
@@ -46,11 +46,11 @@ class Maze():
                 -passage must be perpendicular to the passage we are carving under
                 -square on the other side must be unvisited and within bounderies
                 '''
-                #no options to move into -> remove square from list
-                unvisited.remove(current_square)
+                #no options to move into -> remove square from squarelist
+                squarelist.remove(current_square)
             else:
                 #unvisited neighbours found, select one randomly from the list
-                direction,random_neighbour = random.choise(unvisited)
+                direction,random_neighbour = random.choice(unvisited)
                 current_square.remove_wall(random_neighbour,direction)
                 current_square = random_neighbour
                 squarelist.append(current_square) 
@@ -66,7 +66,7 @@ class Maze():
     
     
     
-    #returns list of unvisited neighbour squares 
+    #returns list of tuples with unvisited neighbour squares, and their direction 
     def unvisited_neighbours(self,square):
         
         #sets numeric tuples for possible directions
@@ -78,9 +78,9 @@ class Maze():
         for direction, (xi,yi) in directions:
             if (0 <= (square.x + xi) < self.width) and (0 <= square.y + yi < self.height):
                 
-                #checks if found neighbour has been visited, if not, adds to the list
-                if (self.squares[square.x+xi][square.y+yi].has_been_visited()):
-                    unvisited.append(direction,self.squares[square.x+xi][square.y+yi])
+                #checks if found neighbour has been visited, if not, adds to the list with the direction
+                if (self.squares[square.x+xi][square.y+yi].has_not_been_visited()):
+                    unvisited.append((direction,self.squares[square.x+xi][square.y+yi]))
                 
         return unvisited
     

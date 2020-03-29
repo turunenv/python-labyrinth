@@ -1,4 +1,5 @@
 from __builtin__ import False, True
+from Carbon.Aliases import true
 class Square():
     
     # The Class Square represents a single square in the labyrinth.
@@ -17,6 +18,7 @@ class Square():
         self.walls = {'N':True,'S':True,'W':True,'E':True}
         self.mouse = False
         
+        
     
     #remove wall between square and neighbour
     def remove_wall(self,neighbour,wall):
@@ -26,3 +28,12 @@ class Square():
     #square has not been vi sited, if it still has all four walls
     def has_not_been_visited(self):
         return all(self.walls.values())
+    
+    
+    #check for vertical straight carved passages for weave-carving
+    def vertical_passage(self):
+        if not (self.walls['N'] and self.walls['S']):
+            return True
+    def horizontal_passage(self):
+        if not(self.walls['W'] and self.walls['E']):
+            return True
