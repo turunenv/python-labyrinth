@@ -1,5 +1,6 @@
 from square import Square
 import random
+from numpy import square
 
 class Maze():
     
@@ -19,7 +20,42 @@ class Maze():
         self.squares[x][y].has_been_visited = True
         squarelist = [self.squares[x][y]]
         
-    
+        '''
+        Using "growing tree" -algorithm for generating the weave-maze:
+        - first we add randomly selected square to list squarelist
+        - next we select random unvisited neighbour, carve the wall and add that square to the list
+        -continue until select square with no unvisited neighbours:
+            *then check weather carving under another passage is possible
+            -> if yes, carve
+            ->if not, remove squares from the list until faced with square with unvisited
+        -when list is empty, maze is complete
+        
+        '''
+        while(len(squarelist) != 0):
+            len_squarelist = len(squarelist)
+            current_square = squarelist[len_squarelist - 1] #select newest square in squarelist
+            unvisited = self.unvisited_neighbours(current_square)
+            num_options = len(unvisited)
+            
+            if (num_options == 0):
+                '''
+                if (possible_to_carve_under?):
+                    carve_under
+                
+                *** requirements: ***
+                -passage must be perpendicular to the passage we are carving under
+                -square on the other side must be unvisited and within bounderies
+                '''
+                #no options to move into -> remove square from list
+                unvisited.remove(current_square)
+            else:
+                #unvisited neighbours found, select one randomly from the list
+                direction,random_neighbour = random.choise(unvisited)
+                current_square.remove_wall(random_neighbour,direction)
+                current_square = random_neighbour
+                squarelist.append(current_square) 
+                
+                
     
     
     
