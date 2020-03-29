@@ -25,7 +25,4 @@ class Square():
         
     #square has not been vi sited, if it still has all four walls
     def has_not_been_visited(self):
-        if (True in self.walls.values()):
-            return True
-        else:
-            return False
+        return all(self.walls.values())
