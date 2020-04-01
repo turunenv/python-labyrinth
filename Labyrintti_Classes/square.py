@@ -17,6 +17,8 @@ class Square():
         self.y = y
         self.walls = {'N':True,'S':True,'W':True,'E':True}
         self.mouse = False
+        #tells us weather the square is under another square
+        self.is_under = False
         
         
     

@@ -3,6 +3,9 @@ import random
 from numpy import square
 
 class Maze():
+    #sets numeric tuples for possible directions
+    directions = [('N',(0,-1)),('S',(0,1)),('W',(-1,0)),('E',(1,0))]
+    
     
     #create the initial maze with given width and height
     def __init__(self,width,height):
@@ -69,25 +72,48 @@ class Maze():
     #returns list of tuples with unvisited neighbour squares, and their direction 
     def unvisited_neighbours(self,square):
         
-        #sets numeric tuples for possible directions
-        directions = [('N',(0,-1)),('S',(0,1)),('W',(-1,0)),('E',(1,0))]
+        
+        
         
         unvisited = []
         
         #checks all directions for possible neighbour cells.
-        for direction, (xi,yi) in directions:
-            if (0 <= (square.x + xi) < self.width) and (0 <= square.y + yi < self.height):
+        for direction, (xi,yi) in Maze.directions:
+            if (self.square_in_bounderies(square.x + xi, square.y + yi)):
                 
                 #checks if found neighbour has been visited, if not, adds to the list with the direction
-                if (self.squares[square.x+xi][square.y+yi].has_not_been_visited()):
-                    unvisited.append((direction,self.squares[square.x+xi][square.y+yi]))
+                if (self.square(square.x+xi,square.y+yi).has_not_been_visited()):
+                    unvisited.append((direction,self.get_square(square.x+xi,square.y+yi)))
                 
         return unvisited
     
+    def able_to_carve_under(self,square):
+        #return list of options to carve under, if found
+        options = []
+        for direction, (xi,yi) in Maze.directions:
+          if (self.square_in_bounderies(square.x + xi, square.y + yi)):
+              '''
+              For carving horizontally, we need the neighbour-square to have a vertical
+              carved passage, and vice versa.
+              '''
+              if direction == 'E' or 'W':
+                  if (self.get_square(square.x+xi,square.y+yi).vertical_passage()):
+                      #is the square on the other side in bounderies and free?
+                      if (self.square_in_bounderies(square.x + xi * 2, square.y + yi * 2)):
+                          if (self.get_square(square.x + xi * 2, square.y + yi * 2).has_not_been_visited()):
+                              options.append(direction,self.get_square(square.x+xi*2, square.y+yi*2))                       
+                      
+              if direction == 'S' or 'N':
+                  if (self.squares[square.x+xi][square.y+yi].horizontal_passage()):
     
     
-    
-    
+    #checks if square with coordinates x,y exist in our maze
+    def square_in_bounderies(self,x,y):
+        if (0 <= x < self.width) and (0 <= y  < self.height):
+            return True
+       
+    def get_square(self,x,y):
+        return self.squares[x][y]
     
     
     def __str__(self):
