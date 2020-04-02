@@ -5,7 +5,7 @@ from numpy import square
 class Maze():
     #sets numeric tuples for possible directions
     directions = [('N',(0,-1)),('S',(0,1)),('W',(-1,0)),('E',(1,0))]
-    
+    get_direction = {'N':(0,-1),'S':(0,1),'W':(-1,0),'E':(1,0)}
     
     #create the initial maze with given width and height
     def __init__(self,width,height):
@@ -18,10 +18,10 @@ class Maze():
     def carve_maze(self):
        
         #generate random sell from which to start carving the maze
-        x = random.randint(0,self.width)
-        y = random.randint(0,self.height)
-        
-        squarelist = [self.squares[x][y]]
+        x = random.randint(0,self.width-1)
+        y = random.randint(0,self.height-1)
+        squarelist = []
+        squarelist.append(self.squares[x][y])
         
         '''
         Using "growing tree" -algorithm for generating the weave-maze:
@@ -41,16 +41,20 @@ class Maze():
             num_options = len(unvisited)
             
             if (num_options == 0):
-                '''
-                if (possible_to_carve_under?):
-                    carve_under
-                
-                *** requirements: ***
-                -passage must be perpendicular to the passage we are carving under
-                -square on the other side must be unvisited and within bounderies
-                '''
+               #can we carve under surrounding squares?
+                carving_options = self.able_to_carve_under(current_square)
+                if(len(carving_options) != 0):
+                   direction, random_square = random.choice(carving_options)
+                   (xb,yb) = self.get_direction[direction]
+                   #create a new square under the neighbour in the right direction
+                   under_square = self.get_square(current_square.x + xb, current_square.y + yb).add_under_square()
+                   squarelist.append(under_square)
+                   next = self.get_square(current_square.x + xb * 2,current_square.y + yb * 2)
+                   next.knock_down_single_wall(Square.walls_between_squares[direction])
+                   squarelist.append(next)
                 #no options to move into -> remove square from squarelist
-                squarelist.remove(current_square)
+                else:
+                    squarelist.remove(current_square)
             else:
                 #unvisited neighbours found, select one randomly from the list
                 direction,random_neighbour = random.choice(unvisited)
@@ -82,7 +86,7 @@ class Maze():
             if (self.square_in_bounderies(square.x + xi, square.y + yi)):
                 
                 #checks if found neighbour has been visited, if not, adds to the list with the direction
-                if (self.square(square.x+xi,square.y+yi).has_not_been_visited()):
+                if (self.get_square(square.x+xi,square.y+yi).has_not_been_visited()):
                     unvisited.append((direction,self.get_square(square.x+xi,square.y+yi)))
                 
         return unvisited
@@ -96,15 +100,15 @@ class Maze():
               For carving horizontally, we need the neighbour-square to have a vertical
               carved passage, and vice versa.
               '''
-              if direction == 'E' or 'W':
-                  if (self.get_square(square.x+xi,square.y+yi).vertical_passage()):
+              if ((direction == 'E' or 'W' and self.get_square(square.x+xi,square.y+yi).vertical_passage())
+                  or (direction == 'S' or 'N' and self.squares[square.x+xi][square.y+yi].horizontal_passage())):
+                  
                       #is the square on the other side in bounderies and free?
                       if (self.square_in_bounderies(square.x + xi * 2, square.y + yi * 2)):
                           if (self.get_square(square.x + xi * 2, square.y + yi * 2).has_not_been_visited()):
-                              options.append(direction,self.get_square(square.x+xi*2, square.y+yi*2))                       
+                              options.append((direction,self.get_square(square.x+xi*2, square.y+yi*2)))                       
                       
-              if direction == 'S' or 'N':
-                  if (self.squares[square.x+xi][square.y+yi].horizontal_passage()):
+        return options      
     
     
     #checks if square with coordinates x,y exist in our maze
@@ -126,10 +130,19 @@ class Maze():
         for y in range(self.height):
             row = ['|'] #set initial western wall to first square
             for x in range(self.width):
+                
+                    
                 if self.squares[x][y].walls['E'] == True: #check every square for eastern wall
-                    row.append(' |')
+                    if self.squares[x][y].has_square_under():
+                        row.append('5|')
+                    else:    
+                        row.append(' |')
                 else:
-                    row.append('  ')
+                    if self.squares[x][y].has_square_under():
+                        row.append('5 ')
+                    else:    
+                        row.append('  ')
+                    
             rows.append(''.join(row))
             
             #check every square for the southern walls
