@@ -134,8 +134,8 @@ class Maze():
                     
                 if self.squares[x][y].walls['E'] == True: #check every square for eastern wall
                     if self.squares[x][y].has_square_under():
-                        row.append('5|')
-                    else:    
+                           row.append('5|')
+                    else: 
                         row.append(' |')
                 else:
                     if self.squares[x][y].has_square_under():
