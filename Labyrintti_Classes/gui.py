@@ -1,5 +1,8 @@
+from maze import Maze
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QAppllication, QMainWindow, QGraphicsScene, QGraphicsView
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QGraphicsView
+from PyQt5.Qt import QGraphicsRectItem
+from PyQt5.QtGui import QPainter, QBrush, qBlue
 
 
 
@@ -11,20 +14,15 @@ class GUI(QtWidgets.QMainWindow):
         self.setCentralWidget(QtWidgets.QWidget()) # QMainWindown must have a centralWidget to be able to add layouts
         self.horizontal = QtWidgets.QHBoxLayout() # Horizontal main layout
         self.centralWidget().setLayout(self.horizontal)
-        self.world = world
+        self.maze = maze
         self.square_size = square_size
         self.init_window()
-        self.init_buttons()
-        self.gui_exercise = GuiExercise(self.world, self.scene, self.square_size)
+        
+        
 
-        self.add_robot_world_grid_items()
-        self.add_robot_graphics_items()
-        self.update_robots()
+       
 
-        # Set a timer to call the update function periodically
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.update_robots)
-        self.timer.start(10) # Milliseconds
+        
         
     def init_window(self):
         '''
@@ -43,3 +41,13 @@ class GUI(QtWidgets.QMainWindow):
         self.view.adjustSize()
         self.view.show()
         self.horizontal.addWidget(self.view)
+        self.add_maze_squares()
+        
+    def add_maze_squares(self):
+        for i in range(self.maze.height):
+            for j in range(self.maze.width):
+                square = QGraphicsRectItem(i*self.square_size,j*self.square_size,self.square_size,self.square_size)
+                self.scene.addItem(square)
+                
+                
+                
