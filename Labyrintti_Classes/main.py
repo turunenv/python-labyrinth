@@ -38,6 +38,7 @@ def main():
     test_maze = Maze(width,height)
     print(test_maze)
     test_maze.carve_maze()
+    test_maze.set_mouse()
     print(test_maze)
     
     global app
