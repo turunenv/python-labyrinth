@@ -1,10 +1,11 @@
 from square import Square
 from maze import Maze
 import sys
-import PyQt5
+from PyQt5.QtWidgets import QApplication
+
 
 from gui import GUI
-from scipy.weave.examples.wx_example import app
+
 
 
 
