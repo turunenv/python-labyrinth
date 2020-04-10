@@ -136,6 +136,12 @@ class Maze():
     def get_square(self,x,y):
         return self.squares[x][y]
     
+    def set_mouse(self):
+        w = int(self.width/2)
+        h = int(self.height/2)
+        #drop mouse in the middle of the maze 
+        self.get_square(w, h).set_mouse()
+    
     
     def __str__(self):
         #print a string representation of the maze
@@ -158,7 +164,7 @@ class Maze():
                 else:
                     if x+1 < self.width and self.squares[x+1][y].walls['W'] == True:
                         '''
-                        Because we have removed also single wall with the carving under-method,
+                        Because we have removed also single walls with the carving under-method,
                         we have to also check scenarios where the square has no eastern wall but its
                         neighbour has the western wall -> same with southern and northern walls
                         '''
