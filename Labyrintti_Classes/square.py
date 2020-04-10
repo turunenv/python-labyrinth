@@ -35,6 +35,7 @@ class Square():
         return all(self.walls.values())
     
     
+    
     def has_this_wall(self,direction):
         return self.walls[direction]
     
@@ -62,6 +63,9 @@ class Square():
     def has_square_under(self):
         if (self.has_under):
             return True
+        
+    def add_mouse(self):
+        self.mouse = True
         
             
     
