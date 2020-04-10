@@ -1,5 +1,5 @@
-from __builtin__ import False, True
-from Carbon.Aliases import true
+
+
 class Square():
     
     # The Class Square represents a single square in the labyrinth.
@@ -33,6 +33,10 @@ class Square():
     #square has not been vi sited, if it still has all four walls
     def has_not_been_visited(self):
         return all(self.walls.values())
+    
+    
+    def has_this_wall(self,direction):
+        return self.walls[direction]
     
     
     #check for vertical straight carved passages for weave-carving
