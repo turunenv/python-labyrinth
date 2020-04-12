@@ -12,6 +12,7 @@ from gui import GUI
 
 
 def main():
+    
     print("*** Welcome to the Labyrinth! ***\n")
     player = input("Type in your username: ")
     if len(player) >0:
@@ -20,7 +21,7 @@ def main():
         mouse_symbol = mouse_symbol.upper()
     else:
         mouse_symbol = 'M' #if user didn't enter anything, default symbol will be 'M'
-    print("Mouse symbol: {}".format(mouse_symbol))
+    
     play = False
     while not play:
         try:
@@ -32,18 +33,27 @@ def main():
                 print("\nEnter positive numbers larger than 0!\n")
         except ValueError:
             print("\nEnter positive numbers larger than 0!\n")
-        
+    
+     #figure out proportions for the maze based on size 
+    bigger = max(width,height)
+    if bigger <= 15:
+        square_size = 50
+    else:
+       
+        square_size = 30
+    
    
         
-    test_maze = Maze(width,height)
+    test_maze = Maze(width,height,mouse_symbol)
     print(test_maze)
+
     test_maze.carve_maze()
     test_maze.set_mouse()
     print(test_maze)
     
     global app
     app = QApplication(sys.argv)
-    gui = GUI(test_maze,50)
+    gui = GUI(test_maze,square_size)
     
     sys.exit(app.exec_())
     
