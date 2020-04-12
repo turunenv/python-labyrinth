@@ -8,11 +8,12 @@ class Maze():
     get_direction = {'N':(0,-1),'S':(0,1),'W':(-1,0),'E':(1,0)}
     
     #create the initial maze with given width and height
-    def __init__(self,width,height):
+    def __init__(self,width,height,mouse_symbol):
         self.squares = [[Square(x,y) for y in range(height)]for x in range(width)]
         self.width = width
         self.height = height
-                
+        self.mouse = mouse_symbol
+               
                 
     
     def carve_maze(self):
@@ -57,7 +58,7 @@ class Maze():
                     squarelist.remove(current_square)
                     while (num_options == 0 and len(squarelist) != 0):
                         
-                        
+                        #do not carve under others while backtracking in order to make the maze visually more clear
                         current_square = squarelist[len(squarelist)-1]
                         unvisited = self.unvisited_neighbours(current_square)
                         num_options = len(unvisited)
@@ -74,7 +75,8 @@ class Maze():
                 
                 
     
-    
+        #make the exit
+        self.get_square(self.width-1, self.height-1).knock_down_single_wall('S')
     
     
     
@@ -140,7 +142,34 @@ class Maze():
         w = int(self.width/2)
         h = int(self.height/2)
         #drop mouse in the middle of the maze 
-        self.get_square(w, h).set_mouse()
+        self.get_square(w, h).add_mouse()
+    
+    def get_mouse_symbol(self):
+        return self.mouse
+    def get_mouse_square(self):
+        mouse_found = False
+        for y in range(self.height):
+            if mouse_found:
+                break
+            for x in range(self.width):
+                
+                if self.get_square(x, y).mouse:
+                    square = self.get_square(x, y)
+                    mouse_found = True
+                if self.get_square(x, y).has_square_under():
+                    if self.get_square(x, y).get_under_square().mouse:
+                        square = self.get_square(x, y).get_under_square()
+                        mouse_found = True
+                        
+        if mouse_found:
+            return square
+            print("MOUSE FOUND IN {},{}".format(square.x,square.y))
+            if not self.get_square(x, y).mouse:
+                print("mouse is not on the surface but...")
+            if self.get_square(x,y).has_mouse_under():
+                print("it is under it!!")
+        else:
+            return self.get_square(0,0)
     
     
     def __str__(self):

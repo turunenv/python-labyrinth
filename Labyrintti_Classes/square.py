@@ -61,7 +61,7 @@ class Square():
             under_square.walls['W'] = False
             under_square.walls['E'] = False
         self.under_square = under_square
-        print("X: {}".format(self.x))
+        
         return under_square
     def get_under_square(self):
         return self.under_square
