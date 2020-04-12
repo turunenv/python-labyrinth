@@ -19,6 +19,7 @@ class Square():
         self.mouse = False
         #tells us weather the square has another square under itself
         self.has_under = False
+        self.under_square = None
         
         
     
@@ -50,22 +51,36 @@ class Square():
     
     def add_under_square(self):
         self.has_under = True
+        
         under_square = Square(self.x,self.y)
+        
         if (self.horizontal_passage()):
             under_square.walls['N'] = False 
             under_square.walls['S'] = False
         else:
             under_square.walls['W'] = False
             under_square.walls['E'] = False
+        self.under_square = under_square
+        print("X: {}".format(self.x))
         return under_square
+    def get_under_square(self):
+        return self.under_square
     
     #check if a square has a square under itself
     def has_square_under(self):
         if (self.has_under):
             return True
         
+        
     def add_mouse(self):
         self.mouse = True
+    def remove_mouse(self):
+        self.mouse = False
+        
+    def get_x(self):
+        return self.x
+    def get_y(self):
+        return self.y
         
             
     
