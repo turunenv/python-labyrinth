@@ -160,16 +160,12 @@ class Maze():
                     if self.get_square(x, y).get_under_square().mouse:
                         square = self.get_square(x, y).get_under_square()
                         mouse_found = True
-                        
-        if mouse_found:
-            return square
-            print("MOUSE FOUND IN {},{}".format(square.x,square.y))
-            if not self.get_square(x, y).mouse:
-                print("mouse is not on the surface but...")
-            if self.get_square(x,y).has_mouse_under():
-                print("it is under it!!")
-        else:
-            return self.get_square(0,0)
+                if mouse_found:
+                    return square       
+        
+            
+           
+        
     
     
     def __str__(self):
