@@ -1,7 +1,8 @@
 from square import Square
 import random
 import queue
-from builtins import True
+from corrupted_maze_file_error import *
+
 
 
 
@@ -310,13 +311,13 @@ class Maze():
         for a in range(y):
             for b in range(x):
                 square = self.get_square(b, a)
-                for direction in ["N","E","S","W"]: #write squares to file, marking walls with '1's, going clockwise
+                for direction in ["N","E","S","W"]: #write squares to file, marking walls with '1's, no_walls with 0's, going clockwise
                     if square.walls[direction]:
                         f.write('1')
                     else:
                         f.write('0')
                 
-                if square.has_under: #mark under-squares with true or false
+                if square.has_square_under(): #mark under-squares with true or false
                     f.write('T')
                 else:
                     f.write('F')
@@ -333,15 +334,30 @@ class Maze():
         
         f.close()
         
-    def load_from_file(self,filename):
-        try:
+    def load_from_file(filename):
+        
+            print("Trying to read file now...")
             f = open(filename,'r')
+            print("We made it!")
             line = f.readline()
-            x = line[0]
-            y = line[2]
-            mouse = line[4]
+            x = ""
+            y = ""
+            i = 0
+            while line[i] != '/':
+                x += line[i]
+                i +=1
+            i += 1
+            
+            while line[i] != '/':
+                y += line[i]
+                i += 1
+            x = int(x)
+            y = int(y)
+            mouse = line[i+1]
+            print("x: {}, y: {}, mouse: {}".format(x,y,mouse))
+            
             if not isinstance(x,int) and not isinstance(y,int):
-                raise Exception
+                raise CorruptedMazeFileError("Given measures for width and height not integers!")
             else:
                 x_count = 0
                 y_count = 0
@@ -352,52 +368,61 @@ class Maze():
                     for x1 in range (x): 
                         for s in range(6): #every square in the file contains 5 characters plus the separator, i.e. '1110F/'
                             if s == 5:
-                                if line[x1 + s] != '/':
-                                    raise Exception
-                            if s == 4:
-                                if line[4] != 'F' and line[4] != 'T':
-                                    raise Exception
-                                else:
+                                if line[x1*6 + s] != '/':
+                                    raise CorruptedMazeFileError("Missing separator from squares!")
+                            elif s == 4:
+                                if line[x1*6 + 4] != 'F' and line[x1*6 + 4] != 'T':
+                                    raise CorruptedMazeFileError("Incorrect symbol for marking undersquare!")
+                                elif line[x1*6 + 4] == 'T':
                                     maze.get_square(x1,y1).add_under_square()
                                     
                             else:
-                                if line[x1 + s] != '1' and line[x1 +s] != '0':
-                                    raise Exception
-                                if s == 0 and line[x1+s] == '0':
+                                if line[x1*6 + s] != '1' and line[x1*6 +s] != '0':
+                                    raise CorruptedMazeFileError("Incorrect symbol in marking walls!")
+                                if s == 0 and line[x1*6+s] == '0':
                                     maze.get_square(x1,y1).walls['N'] = False
-                                if s == 1 and line[x1+s] == '0':
+                                if s == 1 and line[x1*6+s] == '0':
                                     maze.get_square(x1,y1).walls['E'] = False
-                                if s == 2 and line[x1+s] == '0':
+                                if s == 2 and line[x1*6+s] == '0':
                                     maze.get_square(x1,y1).walls['S'] = False
-                                if s == 3 and line[x1+s] == '0':
+                                if s == 3 and line[x1*6+s] == '0':
                                     maze.get_square(x1,y1).walls['W'] = False
                         
                         
                             
                          
                                 
-                        x_count += 1
-                        if x_count > x:
-                            raise Exception        
-                            
-                    y_count +=1 
-                    if y_count > y:
-                        raise Exception  
+                        
                         
                 line = f.readline()
                 surface = line[0]
                 if not surface == 'S' or surface == 'U':
-                    raise Exception
-                x2 = line[2]
-                y2 = line[4]
-                if not isinstance(x2,int) or not isinstance(y2,int) or 0 < x2 < x or 0 < y2 < y:
-                    raise Exception
-                else if surface == 'S':
+                    raise CorruptedMazeFileError("Incorrect symbol in mouse location!") 
+                x2 = ""
+                y2 = ""
+                i = 2
+                
+                while line[i] != '/':
+                    x2 += line[i]
+                    i +=1
+                i+=1
+                
+                while line[i] != '\n':
+                    y2 += line[i]
+                    i +=1
+                x2 = int(x2)
+                y2 = int(y2)
+                print("X: {}, Y: {}".format(x2,y2))
+                if not isinstance(x2,int) or not isinstance(y2,int) or x2 < 0 or  x2 >= x or y2 < 0 or y2 >= y:
+                    raise CorruptedMazeFileError("Incorrect symbol in mouse directions!") 
+                elif surface == 'S':
                     maze.get_square(x2,y2).mouse = True
                 else:
-                    maze.get_square(x2,y2).get_under_square().mouse = True        
+                    maze.get_square(x2,y2).get_under_square().mouse = True 
+            
+            return maze       
                              
-                
+               
             
      
             
