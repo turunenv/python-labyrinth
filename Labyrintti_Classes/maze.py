@@ -1,5 +1,8 @@
 from square import Square
 import random
+import queue
+
+
 
 
 class Maze():
@@ -51,7 +54,7 @@ class Maze():
                    under_square = self.get_square(current_square.x + xb, current_square.y + yb).add_under_square()
                    squarelist.append(under_square)
                    next = self.get_square(current_square.x + xb * 2,current_square.y + yb * 2)
-                   next.knock_down_single_wall(Square.walls_between_squares[direction])
+                   
                    squarelist.append(next)
                 #no options to move into -> remove square from squarelist
                 else:
@@ -130,6 +133,137 @@ class Maze():
         return options      
     
     
+    def find_shortest_path(self):
+        paths = queue.Queue()
+        paths.put("")
+        add = ""
+        iter = 0;
+        
+        #add directions to paths until we find the goal -> this has to be the shortest path
+        while not self.findGoal(add):
+            iter +=1
+            
+            add = paths.get()
+            for direction in ["N","S","W","E"]:
+                put = add + direction
+                
+                if self.validMove(put):
+                    '''
+                    shortest path will never be one where we turn right back after going to certain direction:
+                    let's make the algorithm smarter by not putting those paths back to the queue:
+                    '''
+                    if len(add) ==0:
+                        paths.put(put)
+                       
+                    elif not add[len(add)-1] == Square.walls_between_squares[direction]:
+                    
+                        paths.put(put)
+                        
+        print("Total iterations: {}".format(iter)) 
+        return add            
+          
+        
+        
+        
+        
+        
+    
+    #check if given path has reached the goal
+    def findGoal(self,path):
+        start = self.get_mouse_square()
+        goal = self.get_square(self.width-1, self.height-1)
+        x = start.x
+        y = start.y
+        
+        for direction in path:
+            (x1,y1) = self.get_direction[direction]
+            x += x1
+            y += y1
+        if self.get_square(x, y).x == goal.x and self.get_square(x, y).y == goal.y:
+            
+            return True
+        return False
+    
+    
+    #check if we can move to this direction
+    def validMove(self,path):
+        
+        start = self.get_mouse_square()
+        goal = self.get_square(self.width-1, self.height-1)
+        
+        #x1, y1 -> coordinates for the square we are trying to move into
+        x1 = start.x
+        y1 = start.y
+        
+        #x2, y2 -> coordinates for square we are moving from, a.k.a. one step behind from path
+        x2 = start.x
+        y2 = start.y
+        
+        
+        for direction in path: #skip the under_square symbols
+           
+            
+            (xi,yi) = self.get_direction[direction]
+            x1 += xi
+            y1 += yi
+        
+        # if len(path) is still 1, we are moving from mouse starting position
+        if len(path) > 1:
+            
+            
+            go_back = path[len(path)-1]
+            
+            
+            (xb,yb) = self.get_direction[Square.walls_between_squares[go_back]]
+            x2 =x1 + xb
+            y2 =y1 + yb
+            
+        
+       
+        
+        '''
+        to see if we are under a square, we check if we "came through a wall" on our last turn, looking at the "surface squares",
+        and if the square in the current coordinates actually has a square under it (because we also "go through a wall" when exiting the 
+        under_square)
+        '''
+        
+        if len(path) > 1 and self.get_square(x2,y2).walls[Square.walls_between_squares[path[len(path)-2]]] and self.get_square(x2, y2).has_square_under():
+            #we are under a square, so we should check the under_square for possible directions
+            if not self.get_square(x2, y2).get_under_square().walls[direction]:
+                return True
+        
+        #check that the square we are trying to move into is within boundaries
+        elif self.square_in_bounderies(x1, y1):
+            #check that there is no wall in this direction 
+             
+            if not self.get_square(x2, y2).walls[direction]:
+                
+                return True
+            
+            
+            #if there is a wall, does the square have a square that we can go under?
+            else:
+                 
+                 if self.get_square(x1, y1).has_square_under():
+                     
+                     
+                     
+                     return True
+        
+        return False
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     #checks if square with coordinates x,y exist in our maze
     def square_in_bounderies(self,x,y):
         if (0 <= x < self.width) and (0 <= y  < self.height):
@@ -161,13 +295,50 @@ class Maze():
                         square = self.get_square(x, y).get_under_square()
                         mouse_found = True
                 if mouse_found:
-                    return square       
+                    return square
+                
+                
+    def save_to_file(self,filename):
+        f = open(filename,"w")
+        x = self.width
+        y = self.height
+        
+        f.write("{}/{}/{}\n".format(x,y,self.mouse)) #mark labyrinth width,height and mouse_symbol to the first row
+        
+        
+        for a in range(y):
+            for b in range(x):
+                square = self.get_square(b, a)
+                for direction in ["N","E","S","W"]: #write squares to file, marking walls with '1's, going clockwise
+                    if square.walls[direction]:
+                        f.write('1')
+                    else:
+                        f.write('0')
+                
+                if square.has_under: #mark under-squares with true or false
+                    f.write('T')
+                else:
+                    f.write('F')
+                f.write('/') #separate squares to make the file more readable
+            f.write("\n") #write each row of squares on its own row in the file
+            
+        mouse_square = self.get_mouse_square()
+        x1 = mouse_square.x
+        y1 = mouse_square.y
+        if self.get_square(x1, y1).mouse: #check if mouse is on the surface or on the possible under-square and mark accordingly -> S=surface, U=under
+            f.write("S/{}/{}\n".format(x1,y1))
+        else:
+           f.write("U/{}/{}\n".format(x1,y1))
+        
+        f.close()
+        
+     
+            
+                 
+                    
+                         
         
             
-           
-        
-    
-    
     def __str__(self):
         #print a string representation of the maze
         
