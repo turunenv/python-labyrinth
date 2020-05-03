@@ -12,7 +12,7 @@ from gui import GUI
 
 
 def main():
-    
+    '''
     print("*** Welcome to the Labyrinth! ***\n")
     player = input("Type in your username: ")
     if len(player) >0:
@@ -41,19 +41,26 @@ def main():
     else:
        
         square_size = 30
-    
+    '''
    
         
-    test_maze = Maze(width,height,mouse_symbol)
+    test_maze = Maze(5,5,'A')
     print(test_maze)
 
     test_maze.carve_maze()
     test_maze.set_mouse()
     print(test_maze)
+    square = test_maze.get_mouse_square()
+    test_maze.save_to_file('maze.txt')
+    
+    
+    test_maze.find_shortest_path()
     
     global app
     app = QApplication(sys.argv)
-    gui = GUI(test_maze,square_size)
+    gui = GUI(test_maze,50)
+
+    
     
     sys.exit(app.exec_())
     

@@ -1,6 +1,7 @@
 from square import Square
 import random
 import queue
+from builtins import True
 
 
 
@@ -332,6 +333,72 @@ class Maze():
         
         f.close()
         
+    def load_from_file(self,filename):
+        try:
+            f = open(filename,'r')
+            line = f.readline()
+            x = line[0]
+            y = line[2]
+            mouse = line[4]
+            if not isinstance(x,int) and not isinstance(y,int):
+                raise Exception
+            else:
+                x_count = 0
+                y_count = 0
+                
+                maze = Maze(x,y,mouse)
+                for y1 in range (y):
+                    line = f.readline()
+                    for x1 in range (x): 
+                        for s in range(6): #every square in the file contains 5 characters plus the separator, i.e. '1110F/'
+                            if s == 5:
+                                if line[x1 + s] != '/':
+                                    raise Exception
+                            if s == 4:
+                                if line[4] != 'F' and line[4] != 'T':
+                                    raise Exception
+                                else:
+                                    maze.get_square(x1,y1).add_under_square()
+                                    
+                            else:
+                                if line[x1 + s] != '1' and line[x1 +s] != '0':
+                                    raise Exception
+                                if s == 0 and line[x1+s] == '0':
+                                    maze.get_square(x1,y1).walls['N'] = False
+                                if s == 1 and line[x1+s] == '0':
+                                    maze.get_square(x1,y1).walls['E'] = False
+                                if s == 2 and line[x1+s] == '0':
+                                    maze.get_square(x1,y1).walls['S'] = False
+                                if s == 3 and line[x1+s] == '0':
+                                    maze.get_square(x1,y1).walls['W'] = False
+                        
+                        
+                            
+                         
+                                
+                        x_count += 1
+                        if x_count > x:
+                            raise Exception        
+                            
+                    y_count +=1 
+                    if y_count > y:
+                        raise Exception  
+                        
+                line = f.readline()
+                surface = line[0]
+                if not surface == 'S' or surface == 'U':
+                    raise Exception
+                x2 = line[2]
+                y2 = line[4]
+                if not isinstance(x2,int) or not isinstance(y2,int) or 0 < x2 < x or 0 < y2 < y:
+                    raise Exception
+                else if surface == 'S':
+                    maze.get_square(x2,y2).mouse = True
+                else:
+                    maze.get_square(x2,y2).get_under_square().mouse = True        
+                             
+                
+            
      
             
                  
