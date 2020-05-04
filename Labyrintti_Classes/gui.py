@@ -2,11 +2,12 @@ from maze import Maze
 from square import Square
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QGraphicsView,\
-    QLineEdit, QLabel, QVBoxLayout,QPlainTextEdit
+    QLineEdit, QLabel, QVBoxLayout,QPlainTextEdit, QMessageBox, QInputDialog
 from PyQt5.Qt import QGraphicsRectItem
 from PyQt5.QtGui import QPainter, QBrush, qBlue, QPen
 from PyQt5.QtCore import Qt, QTimer, QBasicTimer
 from PyQt5.QtTest import QTest
+
 
 
 
@@ -32,7 +33,7 @@ class GUI(QMainWindow):
         self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size, QtGui.QFont.Bold))
         
         
-        
+        self.god = False #allow frustrated players to enter god_mode, and go through walls
         
         
         self.quitting = False
@@ -42,6 +43,7 @@ class GUI(QMainWindow):
         self.quit_button = QtWidgets.QPushButton(self)
         self.save_button = QtWidgets.QPushButton(self)
         self.god_mode = QtWidgets.QPushButton(self)
+        self.tip = QtWidgets.QPushButton(self) #user can ask for tip: gives 20% of the remaining solution
         
         
 
@@ -80,10 +82,19 @@ class GUI(QMainWindow):
         self.save_button.setText("SAVE GAME")
         self.save_button.setGeometry(550,50,145,40)
         self.save_button.setStyleSheet("background-color:rgb(190,190,100)")
+        self.save_button.clicked.connect(self.save_to_file)
         
-        self.god_mode.setText("GOD MODE")
+        self.god_mode.setText("GOD MODE: OFF")
         self.god_mode.setGeometry(550,95,145,40)
         self.god_mode.setStyleSheet("background-color:rgb(155,39,116)")
+        self.god_mode.clicked.connect(self.god_mode_switch)
+        
+        self.tip.setText("ASK FOR TIP")
+        self.tip.setGeometry(550,140,145,40)
+        self.tip.setStyleSheet("background-color:rgb(0,255,77)")
+        self.tip.clicked.connect(self.show_tip)
+        
+        
         
         
         self.show()
@@ -91,6 +102,44 @@ class GUI(QMainWindow):
     def show_solution_and_quit(self):
             self.quitting = True
             self.update()
+            
+    def god_mode_switch(self):
+        if not self.god:
+            self.god = True
+            
+            self.god_mode.setText("GOD MODE: ON")
+        else:
+            self.god = False
+            
+            self.god_mode.setText("GOD MODE: OFF")
+            
+    def show_tip(self):
+        tip = self.maze.ask_for_tip()
+        msg = QMessageBox()
+        
+        msg.setText("Following these directions will help you find home!\n {}".format(tip))
+        x = msg.exec()
+        
+    def input_dialog(self):
+        text,ok = QInputDialog.getText(self,"Save Game","Enter filename:")
+        if ok:
+         return text
+        
+        
+    def save_to_file(self):
+        value = self.input_dialog()
+        if len(value) == 0:
+            msg = QMessageBox()
+            msg.setText("Enter filename that you want to save the game into!")
+            x = msg.exec()
+        else:
+            self.maze.save_to_file(value)
+            msg = QMessageBox()
+            msg.setText("Game saved into file {} successfully!".format(value))
+            x = msg.exec()
+            
+        
+        
         
         
         
@@ -135,46 +184,55 @@ class GUI(QMainWindow):
                 
                 (xi,yi) = self.maze.get_direction[direction]
                 
-                if not we_are_under:
-                   
-                    #check if square in the moving direction exists
+                if self.god: #allow user to move through walls if in god-mode
+                    
                     if self.maze.square_in_bounderies(square.x+xi,square.y+yi) == True:
-                        
-                        
-                        #does the mouse square have a wall in the moving direction?
-                        if square.walls[direction]:
-                            
-                            #check if next square has a square under that we can move into
-                            if self.maze.get_square(square.x+xi,square.y+yi).has_square_under():
-                               
-                                square.remove_mouse()
-                                self.maze.get_square(square.x+xi,square.y+yi).get_under_square().add_mouse()
-                                
-                                
-                                
-                                
-                                we_are_under = True
-                         
-                         #else, we can move the mouse in to the next square       
-                        else:
-                            
-                            square.remove_mouse()
-                            self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
-                            self.update()
-                            
-                            
-                            
-                            
-                #if we are under a square, we can only get out from the direction we came from or the opposite
+                        square.remove_mouse()
+                        self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
+                        self.update()
                     
                 else:
-                     
-                     if not square.walls[direction]:
-                         square.remove_mouse()
-                         self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
-                         we_are_under = False
-                         self.update()
-                    
+                    if not we_are_under:
+                       
+                        #check if square in the moving direction exists
+                        if self.maze.square_in_bounderies(square.x+xi,square.y+yi) == True:
+                            
+                            
+                            #does the mouse square have a wall in the moving direction?
+                            if square.walls[direction]:
+                                
+                                #check if next square has a square under that we can move into
+                                if self.maze.get_square(square.x+xi,square.y+yi).has_square_under():
+                                   
+                                    square.remove_mouse()
+                                    self.maze.get_square(square.x+xi,square.y+yi).get_under_square().add_mouse()
+                                    
+                                    
+                                    
+                                    
+                                    we_are_under = True
+                                    self.update()
+                             
+                             #else, we can move the mouse in to the next square       
+                            else:
+                                
+                                square.remove_mouse()
+                                self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
+                                self.update()
+                                
+                                
+                                
+                                
+                    #if we are under a square, we can only get out from the direction we came from or the opposite
+                        
+                    else:
+                         
+                         if not square.walls[direction]:
+                             square.remove_mouse()
+                             self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
+                             we_are_under = False
+                             self.update()
+                        
         
         
 
@@ -184,10 +242,11 @@ class GUI(QMainWindow):
         
         if self.maze.get_square(mx,my).mouse:
             self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size, QtGui.QFont.Bold))
-            self.mouse.move(loc_x*self.square_size,loc_y*self.square_size)
+            self.mouse.move(loc_x*self.square_size + (self.square_size - self.basic_font_size)/2,loc_y*self.square_size + (self.square_size - self.basic_font_size)/2)
         else:
-           self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size*0.3, QtGui.QFont.ExtraLight)) 
-           self.mouse.move(loc_x*self.square_size,loc_y*self.square_size)
+            #demonstrate being under a square with smaller font
+           self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size*0.6, QtGui.QFont.ExtraLight)) 
+           self.mouse.move(loc_x*self.square_size + (self.square_size - self.basic_font_size*0.6)/2,loc_y*self.square_size + (self.square_size - self.basic_font_size*0.6)/2)
            
             
                     
@@ -311,6 +370,8 @@ class GUI(QMainWindow):
             painter.setPen(pen)
             pen1 = QPen(Qt.darkBlue)
             pen1.setStyle(Qt.DotLine)
+            pen2 = QPen(Qt.black,1, Qt.SolidLine)
+            
             
             for y in range(self.maze.height):
                 for x in range (self.maze.width):
@@ -360,7 +421,7 @@ class GUI(QMainWindow):
             
             
             
-            self.mouse.move(640,670)
+            self.mouse.move(self.maze.width*length - 0.5*length,self.maze.height*length) #guide mouse to the exit
             
             
             
@@ -370,12 +431,21 @@ class GUI(QMainWindow):
             square = maze.get_mouse_square()
             x = square.x
             y = square.y
-            
+            count = 0
+            painter.setPen(pen2)
             for p in path:
-                
+                if count == 0:
+                    pen2.setBrush(Qt.red) #mark the first step with red
+                    painter.setPen(pen2)
+                else:
+                    pen2.setBrush(Qt.blue)
+                    painter.setPen(pen2)
                 (x2,y2) = maze.get_direction[p]
                 x += x2
                 y += y2
+                count +=1
+                
+                
                 painter.drawEllipse(length*x + length/4,length*y + length/4,length/2,length/2)
             
                 
