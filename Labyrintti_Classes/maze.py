@@ -256,6 +256,14 @@ class Maze():
     
     
     
+    #return 1/5 of the shortest path
+    def ask_for_tip(self):
+        solution = self.find_shortest_path()
+        tip = ""
+        for i in range(int(len(solution)/5)): 
+            tip += solution[i]
+        return tip
+        
     
     
     
@@ -337,7 +345,10 @@ class Maze():
     def load_from_file(filename):
         
             print("Trying to read file now...")
-            f = open(filename,'r')
+            try:
+                f = open(filename,'r')
+            except FileNotFoundError:
+                raise CorruptedMazeFileError("File not found!")
             print("We made it!")
             line = f.readline()
             x = ""
