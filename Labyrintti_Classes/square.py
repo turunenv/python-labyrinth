@@ -68,7 +68,7 @@ class Square():
     
     #check if a square has a square under itself
     def has_square_under(self):
-        if (self.has_under):
+        if self.has_under:
             return True
         
         

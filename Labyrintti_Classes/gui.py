@@ -12,6 +12,7 @@ from PyQt5.QtTest import QTest
 
 
 
+
 class GUI(QMainWindow):
     
     def __init__(self, maze, square_size):
@@ -24,21 +25,36 @@ class GUI(QMainWindow):
         self.count = 0
         self.height = 500
         self.maze = maze
+        
         self.mouse = QtWidgets.QLabel(self)
         self.mouse.setText(self.maze.get_mouse_symbol())
         self.basic_font_size = square_size*0.6
-        self.mouse.setFont(QtGui.QFont("Arial", square_size, QtGui.QFont.Bold))
+        self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size, QtGui.QFont.Bold))
+        
+        
+        
+        
+        
         self.quitting = False
         self.path = None
         self.solved = False
+        
+        self.quit_button = QtWidgets.QPushButton(self)
+        self.save_button = QtWidgets.QPushButton(self)
+        self.god_mode = QtWidgets.QPushButton(self)
+        
+        
 
         self.square_size = square_size
         
         self.init_window()
         
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.move_mouse)
-        self.timer.start(10) # Milliseconds
+        
+        
+        
+        
+        
+         
         
         
         
@@ -53,11 +69,28 @@ class GUI(QMainWindow):
         
     def init_window(self):
         
-        self.setGeometry(300, 300, 800, 800)
+        self.setGeometry(300, 300, 700, 700)
         self.setWindowTitle('Labyrintti')
         
-        self.move_mouse()
+        self.quit_button.setText("QUIT")
+        self.quit_button.setGeometry(550,5,145,40)
+        self.quit_button.setStyleSheet("background-color:rgb(39,97,155)")
+        self.quit_button.clicked.connect(self.show_solution_and_quit)
+        
+        self.save_button.setText("SAVE GAME")
+        self.save_button.setGeometry(550,50,145,40)
+        self.save_button.setStyleSheet("background-color:rgb(190,190,100)")
+        
+        self.god_mode.setText("GOD MODE")
+        self.god_mode.setGeometry(550,95,145,40)
+        self.god_mode.setStyleSheet("background-color:rgb(155,39,116)")
+        
+        
         self.show()
+        
+    def show_solution_and_quit(self):
+            self.quitting = True
+            self.update()
         
         
         
@@ -66,102 +99,97 @@ class GUI(QMainWindow):
     def keyPressEvent(self,event):
         square = self.maze.get_mouse_square()
         moving = False
-        #check if mouse if on top or on the under square
+        #check if mouse is on top or on the under square
         if self.maze.get_square(square.x,square.y).mouse:
             we_are_under = False
         else:
             we_are_under = True
         direction = None
         
+        #check if user has quit the game
+        if not self.quitting:
         
-        
-        if event.key() == Qt.Key_Right:
-            direction = 'E'
+            if event.key() == Qt.Key_Right:
+                direction = 'E'
+                
+                moving = True
+            if event.key() == Qt.Key_Left:
+                
+                direction = 'W'
+                moving = True
+            if event.key() == Qt.Key_Up:
+                
+                direction = 'N'
+                moving = True
+            if event.key() == Qt.Key_Down:
+                
+                direction = 'S'
+                moving = True
+                
             
-            moving = True
-        if event.key() == Qt.Key_Left:
-            
-            direction = 'W'
-            moving = True
-        if event.key() == Qt.Key_Up:
-            
-            direction = 'N'
-            moving = True
-        if event.key() == Qt.Key_Down:
-            
-            direction = 'S'
-            moving = True
-            
-        if event.key() == Qt.Key_Q:
-            
-            self.quitting = True
-            self.update()
-            
-            
-            
-        #user pressed a command arrow
-        if moving:
-            
-            (xi,yi) = self.maze.get_direction[direction]
-            
-            if not we_are_under:
-               
-                #check if square in the moving direction exists
-                if self.maze.square_in_bounderies(square.x+xi,square.y+yi) == True:
-                    
-                    
-                    #does the mouse square have a wall in the moving direction?
-                    if square.walls[direction]:
+                
+                
+                
+            #user pressed a command arrow
+            if moving:
+                
+                (xi,yi) = self.maze.get_direction[direction]
+                
+                if not we_are_under:
+                   
+                    #check if square in the moving direction exists
+                    if self.maze.square_in_bounderies(square.x+xi,square.y+yi) == True:
                         
-                        #check if next square has a square under that we can move into
-                        if self.maze.get_square(square.x+xi,square.y+yi).has_square_under():
-                           
+                        
+                        #does the mouse square have a wall in the moving direction?
+                        if square.walls[direction]:
+                            
+                            #check if next square has a square under that we can move into
+                            if self.maze.get_square(square.x+xi,square.y+yi).has_square_under():
+                               
+                                square.remove_mouse()
+                                self.maze.get_square(square.x+xi,square.y+yi).get_under_square().add_mouse()
+                                
+                                
+                                
+                                
+                                we_are_under = True
+                         
+                         #else, we can move the mouse in to the next square       
+                        else:
+                            
                             square.remove_mouse()
-                            self.maze.get_square(square.x+xi,square.y+yi).get_under_square().add_mouse()
+                            self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
+                            self.update()
                             
                             
                             
                             
-                            we_are_under = True
+                #if we are under a square, we can only get out from the direction we came from or the opposite
+                    
+                else:
                      
-                     #else, we can move the mouse in to the next square       
-                    else:
-                        
-                        square.remove_mouse()
-                        self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
-                        
-                        
-                        
-                        
-            #if we are under a square, we can only get out from the direction we came from or the opposite
-                
-            else:
-                 
-                 if not square.walls[direction]:
-                     square.remove_mouse()
-                     self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
-                     we_are_under = False
-                
+                     if not square.walls[direction]:
+                         square.remove_mouse()
+                         self.maze.get_square(square.x+xi,square.y+yi).add_mouse()
+                         we_are_under = False
+                         self.update()
+                    
         
         
 
        
-    #look for mouse location in the maze and its location  
-    def move_mouse(self):
+    #locate mouse correctly to the window, and check from mx,my weather its on the surface or under 
+    def draw_mouse(self,loc_x,loc_y,mx,my):
         
-        length = self.square_size
-        for y in range(self.maze.height):
-            for x in range(self.maze.width):
-                square = self.maze.get_square(x,y)
-                if square.mouse:
-                    self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size, QtGui.QFont.Bold))
-                    self.mouse.move(length*square.x + (length-self.basic_font_size)/2,length*square.y + (length-self.basic_font_size)/2)
-                
-                #represent mouse being under a square by showing it with smaller fontsize
-                elif square.has_square_under():
-                    if square.get_under_square().mouse:
-                        self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size/2, QtGui.QFont.Bold))
-                        self.mouse.move(length*square.x + ((length-self.basic_font_size/2)/2),length*square.y + ((length-self.basic_font_size/2)/2))
+        if self.maze.get_square(mx,my).mouse:
+            self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size, QtGui.QFont.Bold))
+            self.mouse.move(loc_x*self.square_size,loc_y*self.square_size)
+        else:
+           self.mouse.setFont(QtGui.QFont("Arial", self.basic_font_size*0.3, QtGui.QFont.ExtraLight)) 
+           self.mouse.move(loc_x*self.square_size,loc_y*self.square_size)
+           
+            
                     
       
       
@@ -178,6 +206,7 @@ class GUI(QMainWindow):
             
             self.drawWalls(painter,self.maze)
             #print("printcount: {}".format)
+            
             painter.end
         else:
             if not self.solved:
@@ -188,7 +217,7 @@ class GUI(QMainWindow):
             painter = QPainter()
             painter.begin(self)
             
-            self.drawWalls(painter,self.maze)
+            
             self.drawSolution(painter,self.maze,self.path)
             
             painter.end()
@@ -211,53 +240,132 @@ class GUI(QMainWindow):
         pen1 = QPen(Qt.darkBlue)
         pen1.setStyle(Qt.DotLine)
         
-         
+        squares_to_display = int(700/self.square_size) #calculate the amount of squares we can fit on the screen
+        mouse_square = self.maze.get_mouse_square()
+        mx = mouse_square.x
+        my = mouse_square.y
+        
+        count_y = 0
+        
         
         length = self.square_size 
         
-        for y in range(self.maze.height):
-            for x in range(self.maze.width):
-                square = self.maze.get_square(x,y) 
+        for y in range(mouse_square.y - int(squares_to_display/2 -1), mouse_square.y - int(squares_to_display/2 -1) + squares_to_display):
+            count_x = 0
+            for x in range(mouse_square.x - int(squares_to_display/2 - 1), mouse_square.x - int(squares_to_display/2 - 1) + squares_to_display):
                 
-                if square.has_this_wall('N'):
-                            painter.drawLine((square.x*length),(square.y*length),(square.x*length + length),(square.y*length))
-                            
+                #check if x and y are within range
+                if self.maze.square_in_bounderies(x,y):
+                    square = self.maze.get_square(x,y)
+                    if square.x == mx and square.y == my:
                         
-          
-          
-                if square.has_this_wall('S'):
-                    painter.drawLine((square.x*length),((square.y+1)*length),(square.x*length + length),((square.y+1)*length))
-                if square.has_this_wall('W'):
-                    painter.drawLine((square.x*length),(square.y*length),(square.x*length),(square.y*length + length))
-                if square.has_this_wall('E'):
-                    painter.drawLine((square.x*length + length),((square.y)*length),(square.x*length + length),((square.y+1)*length))
-                
-                if square.has_square_under():
-                    
-                    painter.setPen(pen1)
-                    
-                    under_square = square.get_under_square()
-                    if under_square.has_this_wall('N'):
-                        painter.drawLine((square.x*length),(square.y*length),(square.x*length + length),(square.y*length))
-                            
+                        self.draw_mouse(count_x, count_y,x,y)
                         
-          
-          
-                    if under_square.has_this_wall('S'):
-                        painter.drawLine((square.x*length),((square.y+1)*length),(square.x*length + length),((square.y+1)*length))
-                    if under_square.has_this_wall('W'):
-                        painter.drawLine((square.x*length),(square.y*length),(square.x*length),(square.y*length + length))
-                    if under_square.has_this_wall('E'):
-                        painter.drawLine((square.x*length + length),((square.y)*length),(square.x*length + length),((square.y+1)*length))
-                    painter.setPen(pen)
                     
-    
+                            
+                    
+                    if square.has_this_wall('N'):
+                                painter.drawLine((count_x*length),(count_y*length),(count_x*length + length),(count_y*length))
+                                
+                            
+              
+              
+                    if square.has_this_wall('S'):
+                        painter.drawLine((count_x*length),((count_y+1)*length),(count_x*length + length),((count_y+1)*length))
+                    if square.has_this_wall('W'):
+                        painter.drawLine((count_x*length),(count_y*length),(count_x*length),(count_y*length + length))
+                    if square.has_this_wall('E'):
+                        painter.drawLine((count_x*length + length),((count_y)*length),(count_x*length + length),((count_y+1)*length))
+                    
+                    if square.has_square_under():
+                        
+                        painter.setPen(pen1)
+                        
+                        under_square = square.get_under_square()
+                        if under_square.has_this_wall('N'):
+                            painter.drawLine((count_x*length),(count_y*length),(count_x*length + length),(count_y*length))
+                                
+                            
+              
+              
+                        if under_square.has_this_wall('S'):
+                            painter.drawLine((count_x*length),((count_y+1)*length),(count_x*length + length),((count_y+1)*length))
+                        if under_square.has_this_wall('W'):
+                            painter.drawLine((count_x*length),(count_y*length),(count_x*length),(count_y*length + length))
+                        if under_square.has_this_wall('E'):
+                            painter.drawLine((count_x*length + length),((count_y)*length),(count_x*length + length),((count_y+1)*length))
+                        painter.setPen(pen)
+                    count_x +=1
+                        
+            count_y += 1
                  
     def drawSolution(self,painter,maze,path):
-        
-            length = self.square_size   
+            
+            #fit the whole labyrinth on the screen and show the solution
+            size = max(self.maze.width,self.maze.height)
+            if 650/size < self.square_size:
+                length = 650/size
+            else:
+                length = self.square_size
             pen = QPen(Qt.black, 5, Qt.SolidLine)  
             painter.setPen(pen)
+            pen1 = QPen(Qt.darkBlue)
+            pen1.setStyle(Qt.DotLine)
+            
+            for y in range(self.maze.height):
+                for x in range (self.maze.width):
+                    square = self.maze.get_square(x,y)
+                    
+                        
+                    
+                            
+                    
+                    if square.has_this_wall('N'):
+                                painter.drawLine((x*length),(y*length),(x*length + length),(y*length))
+                                
+                            
+              
+              
+                    if square.has_this_wall('S'):
+                        painter.drawLine((x*length),((y+1)*length),(x*length + length),((y+1)*length))
+                    if square.has_this_wall('W'):
+                        painter.drawLine((x*length),(y*length),(x*length),(y*length + length))
+                    if square.has_this_wall('E'):
+                        painter.drawLine((x*length + length),((y)*length),(x*length + length),((y+1)*length))
+                    
+                    if square.has_square_under():
+                        
+                        painter.setPen(pen1)
+                        
+                        under_square = square.get_under_square()
+                        if under_square.has_this_wall('N'):
+                            painter.drawLine((x*length),(y*length),(x*length + length),(y*length))
+                                
+                            
+              
+              
+                        if under_square.has_this_wall('S'):
+                            painter.drawLine((x*length),((y+1)*length),(x*length + length),((y+1)*length))
+                        if under_square.has_this_wall('W'):
+                            painter.drawLine((x*length),(y*length),(x*length),(y*length + length))
+                        if under_square.has_this_wall('E'):
+                            painter.drawLine((x*length + length),((y)*length),(x*length + length),((y+1)*length))
+                        painter.setPen(pen)
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            self.mouse.move(640,670)
+            
+            
+            
+            
+            
             
             square = maze.get_mouse_square()
             x = square.x
