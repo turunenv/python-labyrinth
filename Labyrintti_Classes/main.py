@@ -31,9 +31,10 @@ def main():
             try:
                 maze = Maze.load_from_file(filename)
                 loaded = True
-            except CorruptedMazeFileError :
+            except CorruptedMazeFileError:
                 
                 filename = input("Enter filename:\n")
+                
     
     elif choice == 2:    
         player = input("Type in your username:\n")
@@ -77,7 +78,14 @@ def main():
     
     maze.save_to_file('maze.txt')
     
+    '''
     
+    maze = Maze(15,15,'A')
+    maze.carve_maze()
+    maze.set_mouse()
+    square_size = 50
+    print(maze)
+    '''
     
     
     global app
