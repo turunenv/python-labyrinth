@@ -1,8 +1,8 @@
 import unittest
-from io import StringIO
+
 from maze import Maze
-from square import Square
-from gui import GUI
+
+
 from corrupted_maze_file_error import CorruptedMazeFileError
 
 
@@ -23,10 +23,10 @@ class Test(unittest.TestCase):
             except CorruptedMazeFileError:
                 self.fail("Loading correctly structured file caused an exception.")
                 
-            self.assertEqual(self.maze1.find_shortest_path(),"SSWSSSWWNENEEESWSESSSS")
-            self.assertEqual(self.maze1.ask_for_tip(),"SSWS")
+            self.assertEqual(self.maze1.find_shortest_path(),"WSWWNESSEESSSWWSEE")
+            self.assertEqual(self.maze1.ask_for_tip(),"WSW")
             self.assertEqual(self.maze1.get_mouse_symbol(),"V")
-            self.assertEqual(self.maze1.get_mouse_square(),self.maze1.get_square(8,0))
+            self.assertEqual(self.maze1.get_mouse_square(),self.maze1.get_square(9,3))
             
             #test that there is only one mouse
             count = 0
@@ -42,9 +42,22 @@ class Test(unittest.TestCase):
             except CorruptedMazeFileError:
                 self.fail("Loading correctly structured file caused an exception.")
             
-            self.maze1.get_square(0,0).remove_wall(self.maze1.get_square(1,0),'E')
-            self.assertFalse(self.maze1.get_square(0,0).walls['E'])
-            self.assertFalse(self.maze1.get_square(1,0).walls['W'])
+            self.maze1.get_square(0,0).remove_wall(self.maze1.get_square(0,1),'S')
+            self.assertFalse(self.maze1.get_square(0,0).walls['S'])
+            self.assertFalse(self.maze1.get_square(0,1).walls['N'])
+            
+            
+            
+            self.assertTrue(self.maze1.get_square(0,0).has_this_wall('W'))
+            
+            
+            self.assertTrue(self.maze1.get_square(5,1).vertical_passage())
+            
+            self.assertFalse(self.maze1.get_square(4,3).vertical_passage())
+            self.assertFalse(self.maze1.get_square(4,3).horizontal_passage())
+            
+            self.assertTrue(self.maze1.get_square(1,3).has_square_under())
+            
                 
                 
     
