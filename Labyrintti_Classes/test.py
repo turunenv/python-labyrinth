@@ -9,6 +9,8 @@ from gui import GUI
 
 class Test(unittest.TestCase):
     
+    def test_optimal_solution(self):
+        self.assertEqual(1,1)
     
     
     
@@ -16,6 +18,7 @@ class Test(unittest.TestCase):
         
         
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()
         
 
