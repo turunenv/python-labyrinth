@@ -9,8 +9,7 @@ from gui import GUI
 
 class Test(unittest.TestCase):
     
-    def test_add(self):
-        self.assertEqual(1, 1)
+    
     
     
 
