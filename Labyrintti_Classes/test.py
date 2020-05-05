@@ -42,8 +42,9 @@ class Test(unittest.TestCase):
             except CorruptedMazeFileError:
                 self.fail("Loading correctly structured file caused an exception.")
             
-            self.maze1.get_square(0,0).remove_wall()
-            self.assertEqual()
+            self.maze1.get_square(0,0).remove_wall(self.maze1.get_square(1,0),'E')
+            self.assertFalse(self.maze1.get_square(0,0).walls['E'])
+            self.assertFalse(self.maze1.get_square(1,0).walls['W'])
                 
                 
     
