@@ -266,7 +266,7 @@ class GUI(QMainWindow):
             self.drawWalls(painter,self.maze)
             #print("printcount: {}".format)
             
-            painter.end
+            painter.end()
         else:
             if not self.solved:
                 path = self.maze.find_shortest_path()
