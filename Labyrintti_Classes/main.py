@@ -1,4 +1,4 @@
-from square import Square
+
 from maze import Maze
 import sys
 from PyQt5.QtWidgets import QApplication
@@ -76,7 +76,7 @@ def main():
     
 
     
-    maze.save_to_file('maze.txt')
+    
     
     '''
     
