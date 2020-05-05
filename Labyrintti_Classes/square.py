@@ -43,11 +43,14 @@ class Square():
     
     #check for vertical straight carved passages for weave-carving
     def vertical_passage(self):
-        if not (self.walls['N'] and self.walls['S']):
-            return True
+        if self.walls['N'] or self.walls['S']:
+            return False 
+        return True
     def horizontal_passage(self):
-        if not(self.walls['W'] and self.walls['E']):
-            return True
+        if self.walls['W'] or self.walls['E']:
+            
+            return False
+        return True
     
     def add_under_square(self):
         self.has_under = True
