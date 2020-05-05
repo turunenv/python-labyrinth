@@ -18,7 +18,7 @@ def main():
     chosen = False
     while not chosen:
         try:
-            choice = int(input("To load an existing game, enter '1'\nTo start a new game, enter '2'\n"))
+            choice = int(input("To load an existing game, enter 1\nTo start a new game, enter 2:\n"))
             if choice == 1 or choice == 2:
                 chosen = True
         except ValueError:
