@@ -23,10 +23,10 @@ class Test(unittest.TestCase):
             except CorruptedMazeFileError:
                 self.fail("Loading correctly structured file caused an exception.")
                 
-            self.assertEqual(self.maze1.find_shortest_path(),"WWWWSESSSWSESSSEEEE")
-            self.assertEqual(self.maze1.ask_for_tip(),"WWW")
+            self.assertEqual(self.maze1.find_shortest_path(),"SSWSSSWWNENEEESWSESSSS")
+            self.assertEqual(self.maze1.ask_for_tip(),"SSWS")
             self.assertEqual(self.maze1.get_mouse_symbol(),"V")
-            self.assertEqual(self.maze1.get_mouse_square(),self.maze1.get_square(8,1))
+            self.assertEqual(self.maze1.get_mouse_square(),self.maze1.get_square(8,0))
             
             #test that there is only one mouse
             count = 0
@@ -41,6 +41,9 @@ class Test(unittest.TestCase):
                 self.maze1 = Maze.load_from_file("maze.txt")
             except CorruptedMazeFileError:
                 self.fail("Loading correctly structured file caused an exception.")
+            
+            self.maze1.get_square(0,0).remove_wall()
+            self.assertEqual()
                 
                 
     
