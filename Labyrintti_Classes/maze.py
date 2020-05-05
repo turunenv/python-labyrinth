@@ -47,17 +47,17 @@ class Maze():
             num_options = len(unvisited)
             
             if (num_options == 0):
-               #can we carve under surrounding squares?
+                #can we carve under surrounding squares?
                 carving_options = self.able_to_carve_under(current_square)
                 if(len(carving_options) != 0):
-                   direction, random_square = random.choice(carving_options)
-                   (xb,yb) = self.get_direction[direction]
-                   #create a new square under the neighbour in the right direction
-                   under_square = self.get_square(current_square.x + xb, current_square.y + yb).add_under_square()
-                   squarelist.append(under_square)
-                   next = self.get_square(current_square.x + xb * 2,current_square.y + yb * 2)
+                    direction,random_square = random.choice(carving_options)
+                    (xb,yb) = self.get_direction[direction]
+                    #create a new square under the neighbour in the right direction
+                    under_square = self.get_square(current_square.x + xb, current_square.y + yb).add_under_square()
+                    squarelist.append(under_square)
+                    next_square = self.get_square(current_square.x + xb * 2,current_square.y + yb * 2)
                    
-                   squarelist.append(next)
+                    squarelist.append(next_square)
                 #no options to move into -> remove square from squarelist
                 else:
                     squarelist.remove(current_square)
@@ -112,25 +112,25 @@ class Maze():
         #return list of options to carve under, if found
         options = []
         for direction, (xi,yi) in Maze.directions:
-          if (self.square_in_bounderies(square.x + xi, square.y + yi)):
-              '''
-              For carving horizontally, we need the neighbour-square to have a vertical
-              carved passage, and vice versa.
-              '''
-              if ((direction == 'E' or 'W' and self.get_square(square.x+xi,square.y+yi).vertical_passage()
-                   and square.horizontal_passage())
-                  or (direction == 'S' or 'N' and self.squares[square.x+xi][square.y+yi].horizontal_passage())
-                    and square.vertical_passage()):
-                  #square we are going under needs to have a wall on the opposite side of our direction and the direction
-                  #itself to make #the visual representation clear
-                 
-                  if(self.get_square(square.x+xi, square.y+yi).has_this_wall(Square.walls_between_squares[direction])
-                     and self.get_square(square.x+xi, square.y+yi).has_this_wall(direction)):
-                  
-                      #is the square on the other side in bounderies and free?
-                      if (self.square_in_bounderies(square.x + xi * 2, square.y + yi * 2)):
-                          if (self.get_square(square.x + xi * 2, square.y + yi * 2).has_not_been_visited()):
-                              options.append((direction,self.get_square(square.x+xi*2, square.y+yi*2)))                       
+            if (self.square_in_bounderies(square.x + xi, square.y + yi)):
+                '''
+                For carving horizontally, we need the neighbour-square to have a vertical
+                carved passage, and vice versa.
+                '''
+                if ((direction == 'E' or 'W' and self.get_square(square.x+xi,square.y+yi).vertical_passage()
+                       and square.horizontal_passage())
+                      or (direction == 'S' or 'N' and self.squares[square.x+xi][square.y+yi].horizontal_passage())
+                        and square.vertical_passage()):
+                    #square we are going under needs to have a wall on the opposite side of our direction and the direction
+                    #itself to make #the visual representation clear
+                     
+                    if(self.get_square(square.x+xi, square.y+yi).has_this_wall(Square.walls_between_squares[direction])
+                         and self.get_square(square.x+xi, square.y+yi).has_this_wall(direction)):
+                      
+                        #is the square on the other side in bounderies and free?
+                        if (self.square_in_bounderies(square.x + xi * 2, square.y + yi * 2)):
+                            if (self.get_square(square.x + xi * 2, square.y + yi * 2).has_not_been_visited()):
+                                options.append((direction,self.get_square(square.x+xi*2, square.y+yi*2)))                       
                       
         return options      
     
@@ -139,11 +139,11 @@ class Maze():
         paths = queue.Queue()
         paths.put("")
         add = ""
-        iter = 0;
+        
         
         #add directions to paths until we find the goal -> this has to be the shortest path
         while not self.findGoal(add):
-            iter +=1
+            
             
             add = paths.get()
             for direction in ["N","S","W","E"]:
@@ -160,8 +160,6 @@ class Maze():
                     elif not add[len(add)-1] == Square.walls_between_squares[direction]:
                     
                         paths.put(put)
-                        
-        print("Total iterations: {}".format(iter)) 
         return add            
           
         
@@ -191,7 +189,7 @@ class Maze():
     def validMove(self,path):
         
         start = self.get_mouse_square()
-        goal = self.get_square(self.width-1, self.height-1)
+        
         
         #x1, y1 -> coordinates for the square we are trying to move into
         x1 = start.x
@@ -246,11 +244,11 @@ class Maze():
             #if there is a wall, does the square have a square that we can go under?
             else:
                  
-                 if self.get_square(x1, y1).has_square_under():
+                if self.get_square(x1, y1).has_square_under():
                      
                      
                      
-                     return True
+                    return True
         
         return False
     
@@ -338,11 +336,11 @@ class Maze():
         if self.get_square(x1, y1).mouse: #check if mouse is on the surface or on the possible under-square and mark accordingly -> S=surface, U=under
             f.write("S/{}/{}\n".format(x1,y1))
         else:
-           f.write("U/{}/{}\n".format(x1,y1))
+            f.write("U/{}/{}\n".format(x1,y1))
         
         f.close()
         
-    def load_from_file(filename):
+    def load_from_file(self,filename):
         
             print("Trying to read file now...")
             try:
@@ -370,8 +368,7 @@ class Maze():
             if not isinstance(x,int) and not isinstance(y,int):
                 raise CorruptedMazeFileError("Given measures for width and height not integers!")
             else:
-                x_count = 0
-                y_count = 0
+                
                 
                 maze = Maze(x,y,mouse)
                 for y1 in range (y):
@@ -431,7 +428,11 @@ class Maze():
                 else:
                     maze.get_square(x2,y2).get_under_square().mouse = True 
             
-            return maze       
+            return maze 
+        
+    def made_it_home(self):
+        if self.get_mouse_square() == self.get_square(self.width - 1, self.height - 1):
+            return True      
                              
                
             
@@ -456,7 +457,7 @@ class Maze():
                     
                 if self.squares[x][y].walls['E'] == True: #check every square for eastern wall
                     if self.squares[x][y].has_square_under():
-                           row.append('5|')
+                        row.append('5|')
                     else: 
                         row.append(' |')
                 
