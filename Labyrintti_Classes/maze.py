@@ -334,13 +334,14 @@ class Maze():
         x1 = mouse_square.x
         y1 = mouse_square.y
         if self.get_square(x1, y1).mouse: #check if mouse is on the surface or on the possible under-square and mark accordingly -> S=surface, U=under
-            f.write("S/{}/{}\n".format(x1,y1))
+            f.write("S/{}/{}/\n".format(x1,y1))
         else:
-            f.write("U/{}/{}\n".format(x1,y1))
+            f.write("U/{}/{}/\n".format(x1,y1))
         
         f.close()
         
-    def load_from_file(self,filename):
+    @classmethod   
+    def load_from_file(cls,filename):
         
             print("Trying to read file now...")
             try:
@@ -415,7 +416,7 @@ class Maze():
                     i +=1
                 i+=1
                 
-                while line[i] != '\n':
+                while line[i] != '/':
                     y2 += line[i]
                     i +=1
                 x2 = int(x2)

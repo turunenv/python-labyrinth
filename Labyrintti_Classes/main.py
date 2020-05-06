@@ -31,7 +31,7 @@ def main():
             try:
                 maze = Maze.load_from_file(filename)
                 loaded = True
-            except CorruptedMazeFileError:
+            except CorruptedMazeFileError or TypeError:
                 
                 filename = input("Enter filename:\n")
                 
