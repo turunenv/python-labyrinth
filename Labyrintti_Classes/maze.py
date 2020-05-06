@@ -200,7 +200,7 @@ class Maze():
         y2 = start.y
         
         
-        for direction in path: #skip the under_square symbols
+        for direction in path: 
            
             
             (xi,yi) = self.get_direction[direction]
@@ -343,28 +343,38 @@ class Maze():
     @classmethod   
     def load_from_file(cls,filename):
         
-            print("Trying to read file now...")
+            
             try:
                 f = open(filename,'r')
             except FileNotFoundError:
                 raise CorruptedMazeFileError("File not found!")
-            print("We made it!")
+            
             line = f.readline()
             x = ""
             y = ""
             i = 0
-            while line[i] != '/':
+            if line[-3] != '/':
+                print(line[-3])
+                raise CorruptedMazeFileError("Separator missing from first line!")
+            
+            while (line[i] != '/' and line[i] != '\n'):
                 x += line[i]
                 i +=1
-            i += 1
-            
-            while line[i] != '/':
+            if line[i] == '\n':
+                raise CorruptedMazeFileError("Separator missing from first line!")
+                
+            i+=1
+            while (line[i] != '/' and line[i] != '\n'):
                 y += line[i]
                 i += 1
+            if line[i] == '\n':
+                raise CorruptedMazeFileError("Separator missing from first line!")
+            
+            
             x = int(x)
             y = int(y)
             mouse = line[i+1]
-            print("x: {}, y: {}, mouse: {}".format(x,y,mouse))
+            
             
             if not isinstance(x,int) and not isinstance(y,int):
                 raise CorruptedMazeFileError("Given measures for width and height not integers!")
@@ -405,7 +415,7 @@ class Maze():
                         
                 line = f.readline()
                 surface = line[0]
-                if not surface == 'S' or surface == 'U':
+                if not (surface == 'S' or surface == 'U'):
                     raise CorruptedMazeFileError("Incorrect symbol in mouse location!") 
                 x2 = ""
                 y2 = ""
@@ -440,9 +450,9 @@ class Maze():
      
             
                  
-                    
+    #string representation of the maze, commented out               
                          
-        
+    '''    
             
     def __str__(self):
         #print a string representation of the maze
@@ -464,11 +474,11 @@ class Maze():
                 
                 else:
                     if x+1 < self.width and self.squares[x+1][y].walls['W'] == True:
-                        '''
-                        Because we have removed also single walls with the carving under-method,
-                        we have to also check scenarios where the square has no eastern wall but its
-                        neighbour has the western wall -> same with southern and northern walls
-                        '''
+                        
+                        #Because we have removed also single walls with the carving under-method,
+                        #we have to also check scenarios where the square has no eastern wall but its
+                        #neighbour has the western wall -> same with southern and northern walls
+                        
                         if self.squares[x][y].has_square_under():
                             row.append('5|')
                         else:
@@ -494,7 +504,7 @@ class Maze():
             
         return '\n'.join(rows)
                     
-            
+    '''       
         
         
                 
