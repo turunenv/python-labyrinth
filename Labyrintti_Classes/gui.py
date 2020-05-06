@@ -21,7 +21,7 @@ class GUI(QMainWindow):
         self.left= 150
 
         self.width = 500
-        self.count = 0
+        
         self.height = 500
         self.maze = maze
         
@@ -227,11 +227,6 @@ class GUI(QMainWindow):
                                 
                                 self.update()
                                 
-                                
-                                
-                                
-                    #if we are under a square, we can only get out from the direction we came from or the opposite
-                        
                     else:
                          
                         if not square.walls[direction]:
@@ -268,7 +263,7 @@ class GUI(QMainWindow):
                 
     def paintEvent(self,event): 
         
-        self.count +=1
+        
         if not self.quitting:
             painter = QPainter()
             painter.begin(self)
@@ -292,7 +287,7 @@ class GUI(QMainWindow):
             painter.end()
         
 
-        print("printcount: {}".format(self.count))        
+               
          
        
             
@@ -329,9 +324,9 @@ class GUI(QMainWindow):
         
         length = self.square_size 
         
-        for y in range(mouse_square.y - int(squares_to_display/2 -1), mouse_square.y - int(squares_to_display/2 -1) + squares_to_display):
+        for y in range(mouse_square.y - int(squares_to_display/2), mouse_square.y - int(squares_to_display/2) + squares_to_display):
             count_x = 0
-            for x in range(mouse_square.x - int(squares_to_display/2 - 1), mouse_square.x - int(squares_to_display/2 - 1) + squares_to_display):
+            for x in range(mouse_square.x - int(squares_to_display/2), mouse_square.x - int(squares_to_display/2) + squares_to_display):
                 
                 #check if x and y are within range
                 if self.maze.square_in_bounderies(x,y):

@@ -431,7 +431,7 @@ class Maze():
                     i +=1
                 x2 = int(x2)
                 y2 = int(y2)
-                print("X: {}, Y: {}".format(x2,y2))
+                
                 if not isinstance(x2,int) or not isinstance(y2,int) or x2 < 0 or  x2 >= x or y2 < 0 or y2 >= y:
                     raise CorruptedMazeFileError("Incorrect symbol in mouse directions!") 
                 elif surface == 'S':

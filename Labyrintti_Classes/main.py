@@ -59,11 +59,13 @@ def main():
         maze = Maze(width,height,mouse_symbol)
         maze.carve_maze()
         maze.set_mouse()
-        print(maze)
+        
         
     #figure out proportions for the maze based on size 
     bigger = max(maze.width,maze.height)
-    if bigger <= 20:
+    if bigger <= 10:
+        square_size = 65
+    elif bigger <= 20:
         square_size = 50
     elif bigger < 30:
            
@@ -73,21 +75,6 @@ def main():
     
    
         
-    
-
-    
-    
-    
-    '''
-    
-    maze = Maze(15,15,'A')
-    maze.carve_maze()
-    maze.set_mouse()
-    square_size = 50
-    print(maze)
-    '''
-    
-    
     global app
     app = QApplication(sys.argv)
     gui = GUI(maze,square_size)

@@ -31,7 +31,7 @@ class Square():
     #knock down one wall: used in carving under squares
     def knock_down_single_wall(self,direction):
         self.walls[direction] = False
-    #square has not been vi sited, if it still has all four walls
+    #square has not been visited, if it still has all four walls
     def has_not_been_visited(self):
         return all(self.walls.values())
     
@@ -80,10 +80,7 @@ class Square():
     def remove_mouse(self):
         self.mouse = False
         
-    def get_x(self):
-        return self.x
-    def get_y(self):
-        return self.y
+    
         
             
     
