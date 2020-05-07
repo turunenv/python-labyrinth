@@ -124,7 +124,10 @@ class Maze():
                         #is the square on the other side in bounderies and free?
                         if (self.square_in_bounderies(square.x + xi * 2, square.y + yi * 2)):
                             if (self.get_square(square.x + xi * 2, square.y + yi * 2).has_not_been_visited()):
-                                options.append(direction)                       
+                                
+                                #don't carve into dead ends
+                                if len(self.unvisited_neighbours(self.get_square(square.x + xi * 2, square.y + yi * 2))) > 0:
+                                    options.append(direction)                       
                       
         return options      
     
