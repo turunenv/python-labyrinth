@@ -50,7 +50,7 @@ class Maze():
                 #can we carve under surrounding squares?
                 carving_options = self.able_to_carve_under(current_square)
                 if(len(carving_options) != 0):
-                    direction,random_square = random.choice(carving_options)
+                    direction = random.choice(carving_options)
                     (xb,yb) = self.get_direction[direction]
                     #create a new square under the neighbour in the right direction
                     under_square = self.get_square(current_square.x + xb, current_square.y + yb).add_under_square()
@@ -66,7 +66,7 @@ class Maze():
                         #do not carve under others while backtracking in order to make the maze visually more clear
                         current_square = squarelist[len(squarelist)-1]
                         unvisited = self.unvisited_neighbours(current_square)
-                        num_options = len(unvisited)
+                        num_options = len(self.unvisited_neighbours(current_square))
                         if num_options == 0:
                             squarelist.remove(current_square)
                     
@@ -100,10 +100,10 @@ class Maze():
         
         #checks all directions for possible neighbour cells.
         for direction, (xi,yi) in Maze.directions:
-            if (self.square_in_bounderies(square.x + xi, square.y + yi)):
+            if self.square_in_bounderies(square.x + xi, square.y + yi):
                 
                 #checks if found neighbour has been visited, if not, adds to the list with the direction
-                if (self.get_square(square.x+xi,square.y+yi).has_not_been_visited()):
+                if self.get_square(square.x+xi,square.y+yi).has_not_been_visited():
                     unvisited.append((direction,self.get_square(square.x+xi,square.y+yi)))
                 
         return unvisited
@@ -117,20 +117,14 @@ class Maze():
                 For carving horizontally, we need the neighbour-square to have a vertical
                 carved passage, and vice versa.
                 '''
-                if ((direction == 'E' or 'W' and self.get_square(square.x+xi,square.y+yi).vertical_passage()
-                       and square.horizontal_passage())
-                      or (direction == 'S' or 'N' and self.squares[square.x+xi][square.y+yi].horizontal_passage())
-                        and square.vertical_passage()):
-                    #square we are going under needs to have a wall on the opposite side of our direction and the direction
-                    #itself to make #the visual representation clear
-                     
-                    if(self.get_square(square.x+xi, square.y+yi).has_this_wall(Square.walls_between_squares[direction])
-                         and self.get_square(square.x+xi, square.y+yi).has_this_wall(direction)):
-                      
+                if (((direction == 'E' or direction == 'W') and self.get_square(square.x+xi,square.y+yi).vertical_passage())
+                       
+                      or ((direction == 'S' or direction == 'N') and self.get_square(square.x+xi,square.y+yi).horizontal_passage())):
+                    
                         #is the square on the other side in bounderies and free?
                         if (self.square_in_bounderies(square.x + xi * 2, square.y + yi * 2)):
                             if (self.get_square(square.x + xi * 2, square.y + yi * 2).has_not_been_visited()):
-                                options.append((direction,self.get_square(square.x+xi*2, square.y+yi*2)))                       
+                                options.append(direction)                       
                       
         return options      
     
