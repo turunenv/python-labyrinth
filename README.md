@@ -1,19 +1,21 @@
-1. Mitä ominaisuuksia olet jo toteuttanut projektiisi?
+**Y2 kevät 2020: labyrintti-projekti**
 
-Tähän mennessä olen toteuttanut projektiini maze-, square- sekä main-luokan (lähinnä testausta varten tähän asti). Maze-luokka luo aluksi annettujen 
-pituuden ja leveyden perusteella listan square-olioista, joista labyrintti koostuu. Squaressa on metodeja seinien poistamiseen, vierailemattomien 
-olioiden tsekkaamiseen ja kulkusuunnan tarkistamiseen. Mazen pystyy tarkistamaan, onko annettu square rajojen sisällä ja täyttyykö alikulun ehdot: 
-tärkeimäpänä metodina on carve_maze joka luo halutun weave-labyrintin.
+**Esittely:**
 
-2. Käyttöohje
+Tästä Repositorysta löydät Y2-kurssin projektityöni dokumentteineen. Projektiaiheenani oli toteuttaa ohjelma,
+joka luo ja piirtää ruudulle pelattavan labyrintin. Labyrintti ei saanut olla vain tasomainen 2d-labyrintti, joten 
+toteutin yli- ja alikulkuja sisältävän weave-labyrintin. Tarkemman kuvauksen löydät projektin dokumentaatiosta.
 
-Tällä hetkellä main-luokka luo 10x10 labyrintin, pelattavuutta/lopullista ulkoasua ei ole vielä koodattu, ja weaven testaus on vielä kesken.
+**Repositoryn sisältö:**
 
-3. Aikataulu
+Labyrintti-Classes kansiosta löydät ohjelmakoodit. Dokumentit-kansiosta löytyy suunnitelmat sekä lopullinen ohjelmadokumentti,
+joka sisältää tarkan kuvauksen projektin eri osa-alueista.
 
-Tähän mennessä projekti on edennyt melko rivakasti, ehkä jopa hieman ennakoitua nopeammin: haastavan projektin teko on vielä harkinnassa. Aikaa on 
-mennyt arviolta ehkä noin 14 tuntia.
+**Asennusohje:** 
 
-4. Muuta
+Ajaaksesi ohjelman, tarvitset tietokoneellesi pythonin sekä PyQt5:n.
 
-Projekti on edennyt melko lailla suunnitelman mukaan, eikä suurempia kysymyksiä ole herännyt
+**Käyttöohje:**
+
+Ajaaksesi ohjelma sinun tulee ensin ladata ohjelmakoodin sisältävät tiedostot, jonka jälkeen ohjelman ajaminen voi tapahtua  joko IDE:ssä,
+tai terminaalin kautta, komennolla python3 *file_path*/main.py, missä file_path on tiedoston sijainti tietokoneella.
