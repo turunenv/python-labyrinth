@@ -8,7 +8,7 @@ toteutin yli- ja alikulkuja sisältävän weave-labyrintin. Tarkemman kuvauksen 
 
 **Repositoryn sisältö:**
 
-Labyrintti-Classes kansiosta löydät ohjelmakoodit. Dokumentit-kansiosta löytyy suunnitelmat sekä lopullinen ohjelmadokumentti,
+Labyrintti_Classes kansiosta löydät ohjelmakoodit. Dokumentit-kansiosta löytyy suunnitelmat sekä lopullinen ohjelmadokumentti,
 joka sisältää tarkan kuvauksen projektin eri osa-alueista.
 
 **Asennusohje:** 
