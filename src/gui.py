@@ -4,13 +4,6 @@ from PyQt5.QtWidgets import QMessageBox, QInputDialog, QMainWindow
 from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtCore import Qt
 
-
-
-
-
-
-
-
 class GUI(QMainWindow):
     
     def __init__(self, maze, square_size):
@@ -48,24 +41,7 @@ class GUI(QMainWindow):
         
         self.init_window()
         
-        
-        
-        
-        
-        
-         
-        
-        
-        
-        
-        
-        
-        
-
-       
-
-        
-        
+             
     def init_window(self):
         
         self.setGeometry(300, 300, 700, 700)

@@ -6,12 +6,6 @@ from corrupted_maze_file_error import CorruptedMazeFileError
 
 from gui import GUI
 
-
-
-
-
-
-
 def main():
     
     print("*** Welcome to the Labyrinth! ***\n")
