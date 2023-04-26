@@ -32,13 +32,13 @@ installed, clone the repo and run the game with
 > python main.py
 
 Alternatively, if you want to run the game in Docker (repo cloned and docker installed):
-docker build -t python-labyrinth .
+> docker build -t python-labyrinth .
 
-docker run --rm -it \
- -v /tmp/.X11-unix:/tmp/.X11-unix \
- -e DISPLAY=$DISPLAY \
- -u qtuser \
- python-labyrinth
+> docker run --rm -it \
+> -v /tmp/.X11-unix:/tmp/.X11-unix \
+> -e DISPLAY=$DISPLAY \
+> -u qtuser \
+> python-labyrinth
 
 ### Note
 
