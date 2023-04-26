@@ -1,21 +1,45 @@
-**Y2 kevät 2020: labyrintti-projekti**
+# python-labyrinth
 
-**Esittely:**
+## Description
 
-Tästä Repositorysta löydät Y2-kurssin projektityöni dokumentteineen. Projektiaiheenani oli toteuttaa ohjelma,
-joka luo ja piirtää ruudulle pelattavan labyrintin. Labyrintti ei saanut olla vain tasomainen 2d-labyrintti, joten 
-toteutin yli- ja alikulkuja sisältävän weave-labyrintin. Tarkemman kuvauksen löydät projektin dokumentaatiosta.
+This project was my final project for Aalto University course Y2 on Python programming.
+The assignment was to create a program that creates a playable labyrinth on the screen.
+The labyrinth is not just basic 2D labyrinth, but includes underpasses, marked by
+dotted lines. The user can determine the size of the labyrinth at the start of a game,
+and the algorithm then dynamically creates a new labyrinth for the game.
 
-**Repositoryn sisältö:**
+## Features
 
-Labyrintti_Classes kansiosta löydät ohjelmakoodit. Dokumentit-kansiosta löytyy suunnitelmat sekä lopullinen ohjelmadokumentti,
-joka sisältää tarkan kuvauksen projektin eri osa-alueista.
+- Dynamic maze creation
+- Underpasses
+- Save and start games from files
+- Feeling stuck? Ask for a tip!
+- Oh, you really are over it, huh. Activate God-mode!
 
-**Asennusohje:** 
 
-Ajaaksesi ohjelman, tarvitset tietokoneellesi pythonin sekä PyQt5:n.
+## Contents of the repository
 
-**Käyttöohje:**
+This repo contains the original program code in the src/ folder. It also
+contains the original documents related to the project (plans and final document)
+that were written in Finnish language.
 
-Ajaaksesi ohjelma sinun tulee ensin ladata ohjelmakoodin sisältävät tiedostot, jonka jälkeen ohjelman ajaminen voi tapahtua  joko IDE:ssä,
-tai terminaalin kautta, komennolla python3 *file_path*/main.py, missä file_path on tiedoston sijainti tietokoneella.
+## Running the program
+
+The program is tested to work on Python 3.8 and PyQt 5.15. Once you have those
+installed, clone the repo and run the game with
+  cd src/
+  python main.py
+
+Alternatively, if you want to run the game in Docker (repo cloned and docker installed):
+  docker build -t python-labyrinth .
+
+  docker run --rm -it \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -e DISPLAY=$DISPLAY \
+    -u qtuser \
+    python-labyrinth
+
+  ### Note
+  When the game starts, you may need to first press "G" to make the arrow-key
+  presses regiter.
+
