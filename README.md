@@ -16,7 +16,6 @@ and the algorithm then dynamically creates a new labyrinth for the game.
 - Feeling stuck? Ask for a tip!
 - Oh, you really are over it, huh. Activate God-mode!
 
-
 ## Contents of the repository
 
 This repo contains the original program code in the src/ folder. It also
@@ -27,19 +26,21 @@ that were written in Finnish language.
 
 The program is tested to work on Python 3.8 and PyQt 5.15. Once you have those
 installed, clone the repo and run the game with
-  > cd src/
-  > python main.py
+
+> cd src/
+
+> python main.py
 
 Alternatively, if you want to run the game in Docker (repo cloned and docker installed):
-  docker build -t python-labyrinth .
+docker build -t python-labyrinth .
 
-  docker run --rm -it \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -e DISPLAY=$DISPLAY \
-    -u qtuser \
-    python-labyrinth
+docker run --rm -it \
+ -v /tmp/.X11-unix:/tmp/.X11-unix \
+ -e DISPLAY=$DISPLAY \
+ -u qtuser \
+ python-labyrinth
 
-  ### Note
-  When the game starts, you may need to first press "G" to make the arrow-key
-  presses register.
+### Note
 
+When the game starts, you may need to first press "G" to make the arrow-key
+presses register.
