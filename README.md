@@ -8,6 +8,8 @@ The labyrinth is not just basic 2D labyrinth, but includes underpasses, marked b
 dotted lines. The user can determine the size of the labyrinth at the start of a game,
 and the algorithm then dynamically creates a new labyrinth for the game.
 
+https://user-images.githubusercontent.com/76786791/234547417-59927adc-950c-474e-adf6-b5901dbd0522.mp4
+
 ## Features
 
 - Dynamic maze creation
