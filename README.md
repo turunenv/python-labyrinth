@@ -27,8 +27,8 @@ that were written in Finnish language.
 
 The program is tested to work on Python 3.8 and PyQt 5.15. Once you have those
 installed, clone the repo and run the game with
-  cd src/
-  python main.py
+  > cd src/
+  > python main.py
 
 Alternatively, if you want to run the game in Docker (repo cloned and docker installed):
   docker build -t python-labyrinth .
@@ -41,5 +41,5 @@ Alternatively, if you want to run the game in Docker (repo cloned and docker ins
 
   ### Note
   When the game starts, you may need to first press "G" to make the arrow-key
-  presses regiter.
+  presses register.
 
